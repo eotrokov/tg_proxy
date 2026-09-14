@@ -11,10 +11,6 @@ services:
       - mtproto-data:/data
     security_opt:
       - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
 
   landing:
     image: nginx:1.29-alpine
@@ -31,8 +27,6 @@ services:
       - /tmp
     security_opt:
       - no-new-privileges:true
-    cap_drop:
-      - ALL
 
 volumes:
   mtproto-data:
