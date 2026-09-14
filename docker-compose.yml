@@ -3,20 +3,18 @@ services:
     image: telegrammessenger/proxy:latest
     container_name: telegram-mtproto-proxy
     restart: unless-stopped
-    command:
-      - -user
-      - nobody
-      - -port
-      - "8443"
-      - -secret
-      - "${PROXY_SECRET:?Set PROXY_SECRET in .env}"
+    environment:
+      SECRET: "${PROXY_SECRET:?Set PROXY_SECRET in .env}"
     ports:
-      - "8443:8443/tcp"
-    read_only: true
+      - "8443:443/tcp"
+    volumes:
+      - mtproto-data:/data
     security_opt:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    cap_add:
+      - NET_BIND_SERVICE
 
   landing:
     image: nginx:1.29-alpine
@@ -35,3 +33,6 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+
+volumes:
+  mtproto-data:
