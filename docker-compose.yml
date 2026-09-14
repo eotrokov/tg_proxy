@@ -1,0 +1,37 @@
+services:
+  mtproto-proxy:
+    image: telegrammessenger/proxy:latest
+    container_name: telegram-mtproto-proxy
+    restart: unless-stopped
+    command:
+      - -user
+      - nobody
+      - -port
+      - "8443"
+      - -secret
+      - "${PROXY_SECRET:?Set PROXY_SECRET in .env}"
+    ports:
+      - "8443:8443/tcp"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  landing:
+    image: nginx:1.29-alpine
+    container_name: telegram-proxy-landing
+    restart: unless-stopped
+    ports:
+      - "8081:80/tcp"
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
